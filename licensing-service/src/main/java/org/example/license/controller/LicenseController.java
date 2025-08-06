@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,24 +36,27 @@ public class LicenseController {
     @PutMapping
     public ResponseEntity<String> updateLicense(
             @PathVariable("organizationId") String organizationId,
-            @RequestBody License license) {
+            @RequestBody License license,
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
         return ResponseEntity.ok(licenseService.updateLicense(
-                license, organizationId));
+                license, organizationId, locale));
     }
 
     @PostMapping
     public ResponseEntity<String> createLicense(
             @PathVariable("organizationId") String organizationId,
-            @RequestBody License license) {
+            @RequestBody License license,
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(licenseService.createLicense(license, organizationId));
+                .body(licenseService.createLicense(license, organizationId, locale));
     }
 
     @DeleteMapping("/{licenseId}")
     public ResponseEntity<String> deleteLicense(
             @PathVariable("organizationId") String organizationId,
-            @PathVariable("licenseId") String licenseId) {
+            @PathVariable("licenseId") String licenseId,
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(licenseService.deleteLicense(licenseId, organizationId));
+                .body(licenseService.deleteLicense(licenseId, organizationId, locale));
     }
 }
