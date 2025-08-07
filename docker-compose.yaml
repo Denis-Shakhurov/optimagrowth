@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  licensing-service:
+    build:
+      context: ./licensing-service
+      dockerfile: Dockerfile
+    ports:
+       - "8080:8080"
+    networks:
+      backend:
+        aliases:
+          - "licenseservice"
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    ports:
+      - "8071:8071"
+    networks:
+      backend:
+        aliases:
+          - "configserver"
+
+networks:
+  backend:
+    driver: bridge
