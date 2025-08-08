@@ -37,7 +37,7 @@ public class LicenseController {
                         .getLicense(organizationId, license.getLicenseId()))
                         .withSelfRel(),
                 linkTo(methodOn(LicenseController.class)
-                        .createLicense(organizationId, license, null))
+                        .createLicense(license, organizationId,null))
                         .withRel("createLicense"),
                 linkTo(methodOn(LicenseController.class)
                         .updateLicense(organizationId, license, null))
@@ -50,21 +50,22 @@ public class LicenseController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateLicense(
+    public ResponseEntity<License> updateLicense(
             @PathVariable("organizationId") String organizationId,
             @RequestBody License license,
             @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
         return ResponseEntity.ok(licenseService.updateLicense(
-                license, organizationId, locale));
+                license));
     }
 
     @PostMapping
-    public ResponseEntity<String> createLicense(
-            @PathVariable("organizationId") String organizationId,
+    public ResponseEntity<License> createLicense(
             @RequestBody License license,
+            @PathVariable("organizationId") String organizationId,
             @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+        license.setOrganizationId(organizationId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(licenseService.createLicense(license, organizationId, locale));
+                .body(licenseService.createLicense(license));
     }
 
     @DeleteMapping("/{licenseId}")
@@ -73,6 +74,6 @@ public class LicenseController {
             @PathVariable("licenseId") String licenseId,
             @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(licenseService.deleteLicense(licenseId, organizationId, locale));
+                .body(licenseService.deleteLicense(licenseId));
     }
 }

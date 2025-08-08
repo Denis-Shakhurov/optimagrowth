@@ -1,17 +1,6 @@
 version: "3.8"
 
 services:
-  licensing-service:
-    build:
-      context: ./licensing-service
-      dockerfile: Dockerfile
-    ports:
-       - "8080:8080"
-    networks:
-      backend:
-        aliases:
-          - "licenseservice"
-
   config-server:
     build:
       context: ./config-server
@@ -22,17 +11,50 @@ services:
       backend:
         aliases:
           - "configserver"
+
+  licensing-service:
+    build:
+      context: ./licensing-service
+      dockerfile: Dockerfile
+    ports:
+       - "8080:8080"
+    depends_on:
+      license-db:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 2000
+      SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 10000
+      SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 3
+    networks:
+      backend:
+        aliases:
+          - "licenseservice"
+
   license-db:
     image: postgres:17.5
-    restart: "no"
+    restart: unless-stopped  # Автоматический перезапуск при падении
     ports:
-      - "5434:5432"
+      - "5432:5432"
     volumes:
       - license-db:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ostock_dev
+      PGDATA: /var/lib/postgresql/data/pgdata  # Явное указание пути к данным
+    healthcheck: # Проверка готовности БД
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d ostock_dev" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+    networks:
+      backend:
 
 volumes:
   license-db:

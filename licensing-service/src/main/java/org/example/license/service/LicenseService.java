@@ -1,71 +1,48 @@
 package org.example.license.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.license.model.License;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.example.license.repository.LicenseRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
-import java.util.Random;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class LicenseService {
-    @Autowired
-    MessageSource messages;
+    private final MessageSource messages;
+    private final LicenseRepository licenseRepository;
 
     public License getLicense(String licenseId, String organizationId) {
-        License license = new License();
-        license.setId(new Random().nextInt(1000));
-        license.setLicenseId(licenseId);
-        license.setOrganizationId(organizationId);
-        license.setDescription("Software product");
-        license.setProductName("Ostock");
-        license.setLicenseType("full");
+        return licenseRepository
+                .findByOrganizationIdAndLicenseId(organizationId, licenseId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format(messages.getMessage(
+                        "license.search.error.message", null, null
+                ), licenseId, organizationId)));
+    }
+
+    public License createLicense(License license) {
+        license.setLicenseId(UUID.randomUUID().toString());
+        licenseRepository.save(license);
         return license;
     }
 
-    public String createLicense(License license,
-                                String organizationId,
-                                Locale locale) {
-        String responseMessage = null;
-
-        if (license != null) {
-            license.setOrganizationId(organizationId);
-            responseMessage = String.format(
-                    messages.getMessage("license.create.message", null, locale),
-                    license.toString()
-            );
-        }
-
-        return responseMessage;
+    public License updateLicense(License license) {
+        licenseRepository.save(license);
+        return license;
     }
 
-    public String updateLicense(License license,
-                                String organizationId,
-                                Locale locale) {
+    public String deleteLicense(String licenseId) {
         String responseMessage = null;
+        License license = new License();
+        license.setLicenseId(licenseId);
+        licenseRepository.delete(license);
 
-        if (license != null) {
-            license.setOrganizationId(organizationId);
-            responseMessage = String.format(
-                    messages.getMessage("license.update.message", null, locale),
-                    license.toString()
-            );
-        }
-
-        return responseMessage;
-    }
-
-    public String deleteLicense(String licenseId,
-                                String organizationId,
-                                Locale locale) {
-        String responseMessage = null;
         responseMessage = String.format(
-                messages.getMessage("license.delete.message", null, locale),
-                licenseId, organizationId
+                messages.getMessage("license.delete.message", null, null),
+                licenseId
         );
-
         return responseMessage;
     }
 }
