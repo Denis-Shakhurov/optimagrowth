@@ -12,6 +12,20 @@ services:
         aliases:
           - "configserver"
 
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-server:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "eurekaserver"
+
   licensing-service:
     build:
       context: ./licensing-service
@@ -21,11 +35,9 @@ services:
     depends_on:
       license-db:
         condition: service_healthy
+      config-server:
+        condition: service_started
     restart: unless-stopped
-    environment:
-      SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL: 2000
-      SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL: 10000
-      SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS: 3
     networks:
       backend:
         aliases:

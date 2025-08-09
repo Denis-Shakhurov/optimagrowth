@@ -1,0 +1,22 @@
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: eurekaserver
+    appname: eureka-server
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 10
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    healthcheck:
+      enabled: true
+  server:
+    enable-self-preservation: false  # Отключаем для dev-среды
+    wait-time-in-ms-when-sync-empty: 5000  # 5 секунд в правильном формате
+    eviction-interval-timer-in-ms: 5000
+    response-cache-update-interval-ms: 5000
