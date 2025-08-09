@@ -8,6 +8,7 @@
     
     <modules>
         <module>licensing-service</module>
+        <module>organization-service</module>
         <module>config-server</module>
         <module>eureka-server</module>
     </modules>

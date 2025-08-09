@@ -43,6 +43,23 @@ services:
         aliases:
           - "licenseservice"
 
+  organization-service:
+    build:
+      context: ./organization-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      license-db:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      backend:
+        aliases:
+          - "organizationservice"
+
   license-db:
     image: postgres:17.5
     restart: unless-stopped  # Автоматический перезапуск при падении
