@@ -1,0 +1,17 @@
+example:
+  property: I AM DEV
+
+spring:
+  datasource:
+    url: jdbc:postgresql://license-db:5432/ostock_dev
+    username: "{cipher}4fe9091c741a1c9a387904e2d09b5216b486394d5f6033218e297738d9505639"
+    password: "{cipher}4fe9091c741a1c9a387904e2d09b5216b486394d5f6033218e297738d9505639"
+    driver-class-name: org.postgresql.Driver
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eurekaserver:8761/eureka/
