@@ -2,10 +2,9 @@ package org.example.license.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,6 +32,18 @@ public class License extends RepresentationModel<License> {
     private String licenseType;
 
     private String comment;
+
+    @Transient
+    private String organizationName;
+
+    @Transient
+    private String contactName;
+
+    @Transient
+    private String contactPhone;
+
+    @Transient
+    private String contactEmail;
 
     public License withComment(String comment) {
         this.setComment(comment);
