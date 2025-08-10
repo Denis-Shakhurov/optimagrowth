@@ -1,6 +1,7 @@
 package org.example.license.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.license.model.License;
 import org.example.license.service.LicenseService;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeoutException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/organization/{organizationId}/license")
@@ -47,6 +51,14 @@ public class LicenseController {
                         .withRel("deleteLicense"));
 
         return ResponseEntity.ok(license);
+    }
+
+    @GetMapping
+    public List<License> getLicensesByOrganizationId(
+            @PathVariable String organizationId
+    ) throws TimeoutException {
+        log.error("Error");
+        return licenseService.getLicensesByOrganizationId(organizationId);
     }
 
     @PutMapping
