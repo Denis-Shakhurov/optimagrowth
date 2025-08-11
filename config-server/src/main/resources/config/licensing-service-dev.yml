@@ -16,14 +16,18 @@ eureka:
     service-url:
       defaultZone: http://eurekaserver:8761/eureka/
 
+logging:
+  level:
+    io.github.resilience4j: DEBUG
+
 resilience4j.circuitbreaker:
-  instance:
+  instances:
     licenseService:
       registerHealthIndicator: true
-      ringBufferSizeInClosedState: 5
-      ringBufferSizeInHalfOpenState: 3
+      ringBufferSizeInClosedState: 10
+      ringBufferSizeInHalfOpenState: 5
       waitDurationInOpenState: 10s
-      failureRateThreshold: 50
+      failureRateThreshold: 70
       recordException:
         - org.springframework.web.client.HttpServerErrorException
         - java.io.IOException
@@ -39,22 +43,24 @@ resilience4j.circuitbreaker:
 resilience4j.bulkhead:
   instances:
     bulkheadLicenseService:
-      maxWaitDuration: 10ms
-      maxConcurrentCalls: 20
+      maxThreadPoolSize: 20
+      coreThreadPoolSize: 10
+      queueCapacity: 50
+      keepAliveDuration: 500ms
 
 resilience4j.thread-pool-bulkhead:
   instances:
     bulkheadLicenseService:
-      maxThreadPoolSize: 1
-      coreThreadPoolSize: 1
-      queueCapacity: 1
-      keepAliveDuration: 20ms
+      maxThreadPoolSize: 10
+      coreThreadPoolSize: 5
+      queueCapacity: 100
+      keepAliveDuration: 100ms
 
 resilience4j.retry:
   instances:
     retryLicenseService:
-      maxRetryAttempts: 5
-      waitDuration: 10000
+      maxRetryAttempts: 3
+      waitDuration: 500
       retry-exceptions:
         - java.util.concurrent.TimeoutException
 
@@ -62,5 +68,5 @@ resilience4j.ratelimiter:
   instances:
     licenseService:
       timeoutDuration: 1000ms
-      limitRefreshPeriod: 5000
-      limitForPeriod: 5
+      limitRefreshPeriod: 1s
+      limitForPeriod: 20

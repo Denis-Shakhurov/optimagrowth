@@ -56,7 +56,7 @@ public class LicenseController {
     @GetMapping
     public List<License> getLicensesByOrganizationId(
             @PathVariable String organizationId
-    ) throws TimeoutException {
+    ) {
         log.error("Error");
         return licenseService.getLicensesByOrganizationId(organizationId);
     }

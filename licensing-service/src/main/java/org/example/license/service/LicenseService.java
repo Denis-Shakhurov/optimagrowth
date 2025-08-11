@@ -61,8 +61,7 @@ public class LicenseService {
     @Bulkhead(name = "bulkheadLicenseService",
             type = Bulkhead.Type.THREADPOOL,
             fallbackMethod = "buildFallbackLicenseList")
-    public List<License> getLicensesByOrganizationId(String organizationId) throws TimeoutException {
-        randomlyRunLog();
+    public List<License> getLicensesByOrganizationId(String organizationId) {
         return licenseRepository.findByOrganizationId(organizationId);
     }
 
