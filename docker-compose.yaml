@@ -26,12 +26,28 @@ services:
         aliases:
           - "eurekaserver"
 
+  gateway-server:
+    build:
+      context: ./gateway-server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      config-server:
+        condition: service_started
+      eureka-server:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "gatewayserver"
+
   licensing-service:
     build:
       context: ./licensing-service
       dockerfile: Dockerfile
     ports:
-       - "8080:8080"
+       - "8082:8082"
     depends_on:
       license-db:
         condition: service_healthy
