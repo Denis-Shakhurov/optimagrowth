@@ -28,8 +28,20 @@ spring:
           predicates:
             - Path=/organization/**
           filters:
-            - RewritePath=/organization/
-              (?<path>.*), /$\{path}
+            - RewritePath=/organization/(?<path>.*), /$\{path}
+        - id: licensing-service
+          uri: lb://licensing-service
+          predicates:
+            - Path=/licensing/**
+          filters:
+             - RewritePath=/licensing/(?<path>.*), /$\{path}
+             - TokenRelay
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://keycloak:8080/realms/spmia-realm"
+          jwk-set-uri: "http://keycloak:8080/realms/spmia-realm/protocol/openid-connect/certs"
 
 management:
   endpoints:

@@ -59,7 +59,7 @@ public class LicenseService {
     @Retry(name = "retryLicenseService",
             fallbackMethod = "buildFallbackLicenseList")
     @Bulkhead(name = "bulkheadLicenseService",
-            type = Bulkhead.Type.THREADPOOL,
+            type = Bulkhead.Type.SEMAPHORE,
             fallbackMethod = "buildFallbackLicenseList")
     public List<License> getLicensesByOrganizationId(String organizationId) {
         return licenseRepository.findByOrganizationId(organizationId);

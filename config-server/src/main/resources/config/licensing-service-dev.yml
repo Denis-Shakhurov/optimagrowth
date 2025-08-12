@@ -7,6 +7,11 @@ spring:
     username: "{cipher}4fe9091c741a1c9a387904e2d09b5216b486394d5f6033218e297738d9505639"
     password: "{cipher}4fe9091c741a1c9a387904e2d09b5216b486394d5f6033218e297738d9505639"
     driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://keycloak:8080/realms/spmia-realm"
 
 eureka:
   instance:
